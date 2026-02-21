@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ main, master, develop ]
 
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -24,12 +29,17 @@ jobs:
         distribution: 'temurin'
         cache: 'maven'
         cache-dependency-path: student-management-system/pom.xml
-          
-    - name: Make mvnw executable
+    
+    - name: Grant execute permission for mvnw
       run: chmod +x mvnw
+    
+    - name: Build with Maven
+      run: ./mvnw -B clean compile
         
     - name: Run tests with Maven
-      run: ./mvnw clean test
+      run: ./mvnw -B test
+      env:
+        SPRING_PROFILES_ACTIVE: test
       
     - name: Generate test report
       if: always()

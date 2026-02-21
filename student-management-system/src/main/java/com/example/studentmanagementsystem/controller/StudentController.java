@@ -45,13 +45,17 @@ public class StudentController {
         boolean isTeacher = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_TEACHER"));
         String currentEmail = authentication.getName();
 
-        if (!studentService.canAccess(id, currentEmail, isTeacher)) {
-            return "redirect:/students?error=access_denied";
-        }
+        try {
+            if (!studentService.canAccess(id, currentEmail, isTeacher)) {
+                return "redirect:/students?error=access_denied";
+            }
 
-        model.addAttribute("student", studentService.getStudentById(id));
-        model.addAttribute("isTeacher", isTeacher);
-        return "students/view";
+            model.addAttribute("student", studentService.getStudentById(id));
+            model.addAttribute("isTeacher", isTeacher);
+            return "students/view";
+        } catch (RuntimeException e) {
+            return "redirect:/students?error=not_found";
+        }
     }
 
     // REMOVED: Teachers cannot create students - only via registration

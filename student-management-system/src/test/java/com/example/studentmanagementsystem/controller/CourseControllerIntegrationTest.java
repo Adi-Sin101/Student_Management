@@ -6,6 +6,7 @@ import com.example.studentmanagementsystem.entity.Department;
 import com.example.studentmanagementsystem.entity.Teacher;
 import com.example.studentmanagementsystem.repository.CourseRepository;
 import com.example.studentmanagementsystem.repository.DepartmentRepository;
+import com.example.studentmanagementsystem.repository.StudentRepository;
 import com.example.studentmanagementsystem.repository.TeacherRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -62,14 +63,18 @@ class CourseControllerIntegrationTest {
     @Autowired
     private TeacherRepository teacherRepository;
 
+    @Autowired
+    private StudentRepository studentRepository;
+
     private Department testDepartment;
     private Teacher testTeacher;
     private Course testCourse;
 
     @BeforeEach
     void setUp() {
-        // Clean database
+        // Clean database - order matters due to FK constraints
         courseRepository.deleteAll();
+        studentRepository.deleteAll();
         teacherRepository.deleteAll();
         departmentRepository.deleteAll();
 
