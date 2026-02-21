@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration - Student Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+        .register-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .register-header i {
+            font-size: 48px;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="register-card">
+            <div class="register-header">
+                <i class="bi bi-person-circle"></i>
+                <h2 class="mt-3">Student Registration</h2>
+                <p class="text-muted">Create your student account</p>
+            </div>
+
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle"></i> <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <form th:action="@{/register/student}" th:object="${studentDto}" method="post">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input type="text" class="form-control" id="name" th:field="*{name}"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                                   placeholder="Enter your full name">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="roll" class="form-label">Roll Number <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-hash"></i></span>
+                            <input type="text" class="form-control" id="roll" th:field="*{roll}"
+                                   th:classappend="${#fields.hasErrors('roll')} ? 'is-invalid' : ''"
+                                   placeholder="e.g., CS2021001">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('roll')}" th:errors="*{roll}"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" th:field="*{email}"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                               placeholder="your.email@student.edu">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control" id="password" th:field="*{password}"
+                               th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                               placeholder="At least 6 characters">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="departmentId" class="form-label">Department</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-building"></i></span>
+                        <select class="form-select" id="departmentId" th:field="*{departmentId}">
+                            <option value="">-- Select Department (Optional) --</option>
+                            <option th:each="dept : ${departments}" th:value="${dept.id}" th:text="${dept.name}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 py-2 mt-3">
+                    <i class="bi bi-person-plus"></i> Register as Student
+                </button>
+            </form>
+
+            <hr class="my-4">
+
+            <div class="text-center">
+                <p class="text-muted mb-2">
+                    Want to register as a teacher?
+                    <a href="/register/teacher" class="text-decoration-none">Register here</a>
+                </p>
+                <p class="text-muted mb-0">
+                    Already have an account?
+                    <a href="/login" class="text-decoration-none">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

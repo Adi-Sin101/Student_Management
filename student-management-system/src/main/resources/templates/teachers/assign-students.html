@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+    <div th:replace="~{fragments/layout :: navbar}"></div>
+
+    <div class="container mt-4">
+        <div th:replace="~{fragments/layout :: alerts}"></div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="bi bi-people"></i> Assign Students to <span th:text="${teacher.name}">Teacher</span></h1>
+            <a th:href="@{/teachers/{id}(id=${teacher.id})}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Details
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{/teachers/{id}/assign-students(id=${teacher.id})}" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Select Students</label>
+                        <div class="row">
+                            <div class="col-md-4 mb-2" th:each="student : ${allStudents}">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox"
+                                           th:id="'student_' + ${student.id}"
+                                           name="studentIds"
+                                           th:value="${student.id}"
+                                           th:checked="${assignedStudentIds.contains(student.id)}">
+                                    <label class="form-check-label" th:for="'student_' + ${student.id}">
+                                        <span th:text="${student.name}">Student Name</span>
+                                        <small class="text-muted" th:text="' (' + ${student.roll} + ')'">Roll</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <p th:if="${#lists.isEmpty(allStudents)}" class="text-muted">No students available.</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg"></i> Save Assignments
+                        </button>
+                        <a th:href="@{/teachers/{id}(id=${teacher.id})}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

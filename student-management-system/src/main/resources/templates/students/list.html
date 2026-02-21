@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+    <div th:replace="~{fragments/layout :: navbar}"></div>
+
+    <div class="container mt-4">
+        <div th:replace="~{fragments/layout :: alerts}"></div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="bi bi-people"></i> Students</h1>
+            <a th:href="@{/students/create}" class="btn btn-primary" sec:authorize="hasRole('TEACHER')">
+                <i class="bi bi-person-plus"></i> Add Student
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Roll</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="student : ${students}">
+                                <td th:text="${student.id}">1</td>
+                                <td th:text="${student.name}">John Doe</td>
+                                <td th:text="${student.roll}">CS001</td>
+                                <td th:text="${student.email}">john@example.com</td>
+                                <td th:text="${student.department?.name ?: 'N/A'}">Computer Science</td>
+                                <td>
+                                    <a th:href="@{/students/{id}(id=${student.id})}" class="btn btn-sm btn-info">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a th:href="@{/students/{id}/edit(id=${student.id})}" class="btn btn-sm btn-warning"
+                                       th:if="${isTeacher}">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form th:action="@{/students/{id}/delete(id=${student.id})}" method="post"
+                                          class="d-inline" th:if="${isTeacher}"
+                                          onsubmit="return confirm('Are you sure you want to delete this student?');">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(students)}">
+                                <td colspan="6" class="text-center text-muted">No students found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

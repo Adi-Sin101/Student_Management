@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Student Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .choice-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+        }
+        .choice-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .choice-header i {
+            font-size: 48px;
+            color: #667eea;
+        }
+        .role-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+        .role-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+            transform: translateY(-5px);
+            text-decoration: none;
+        }
+        .role-card i {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+        .role-card.student-card i {
+            color: #4CAF50;
+        }
+        .role-card.teacher-card i {
+            color: #FF9800;
+        }
+    </style>
+</head>
+<body>
+    <div class="choice-card">
+        <div class="choice-header">
+            <i class="bi bi-person-plus-fill"></i>
+            <h2 class="mt-3">Register New Account</h2>
+            <p class="text-muted">Choose your role to get started</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <a href="/register/student" class="role-card student-card">
+                    <i class="bi bi-person-circle"></i>
+                    <h4>Student</h4>
+                    <p class="text-muted mb-0">Register as a student to access courses and resources</p>
+                </a>
+            </div>
+            <div class="col-md-6">
+                <a href="/register/teacher" class="role-card teacher-card">
+                    <i class="bi bi-person-badge-fill"></i>
+                    <h4>Teacher</h4>
+                    <p class="text-muted mb-0">Register as a teacher to manage students and courses</p>
+                </a>
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="text-center">
+            <p class="text-muted mb-0">
+                Already have an account?
+                <a href="/login" class="text-decoration-none">Login here</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
