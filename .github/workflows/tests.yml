@@ -24,6 +24,9 @@ jobs:
         distribution: 'temurin'
         cache: 'maven'
         cache-dependency-path: student-management-system/pom.xml
+          
+    - name: Make mvnw executable
+      run: chmod +x student-management-system/mvnw
         
     - name: Run tests with Maven
       run: ./mvnw clean test
