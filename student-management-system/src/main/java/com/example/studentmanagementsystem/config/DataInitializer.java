@@ -9,10 +9,12 @@ import com.example.studentmanagementsystem.repository.DepartmentRepository;
 import com.example.studentmanagementsystem.repository.StudentRepository;
 import com.example.studentmanagementsystem.repository.TeacherRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("!test")
 public class DataInitializer implements CommandLineRunner {
 
     private final DepartmentRepository departmentRepository;

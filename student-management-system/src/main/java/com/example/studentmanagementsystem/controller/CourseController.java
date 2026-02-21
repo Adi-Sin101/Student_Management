@@ -46,15 +46,20 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    public String viewCourse(@PathVariable Long id, Model model) {
-        model.addAttribute("course", courseService.getCourseById(id));
-        return "courses/view";
+    public String viewCourse(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            model.addAttribute("course", courseService.getCourseById(id));
+            return "courses/view";
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/courses";
+        }
     }
 
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("courseDto", new CourseDto());
-        // Department and Teacher will be auto-set to current teacher
+        model.addAttribute("departments", departmentService.getAllDepartments());
         return "courses/create";
     }
 
@@ -65,31 +70,39 @@ public class CourseController {
                                Model model,
                                RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
+            model.addAttribute("departments", departmentService.getAllDepartments());
             return "courses/create";
         }
 
         try {
-            courseService.createCourse(dto, authentication.getName());
+            Course created = courseService.createCourse(dto, authentication.getName());
             redirectAttributes.addFlashAttribute("successMessage", "Course created successfully in your department!");
-            return "redirect:/courses";
+            return "redirect:/courses/" + created.getId();
         } catch (RuntimeException e) {
             model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("departments", departmentService.getAllDepartments());
             return "courses/create";
         }
     }
 
     @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable Long id, Model model) {
-        Course course = courseService.getCourseById(id);
-        CourseDto dto = new CourseDto();
-        dto.setId(course.getId());
-        dto.setName(course.getName());
-        dto.setDescription(course.getDescription());
+    public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Course course = courseService.getCourseById(id);
+            CourseDto dto = new CourseDto();
+            dto.setId(course.getId());
+            dto.setName(course.getName());
+            dto.setDescription(course.getDescription());
 
-        model.addAttribute("courseDto", dto);
-        model.addAttribute("courseId", id);
-        // Department and Teacher are fixed, cannot be changed
-        return "courses/edit";
+            model.addAttribute("course", course);
+            model.addAttribute("courseDto", dto);
+            model.addAttribute("courseId", id);
+            model.addAttribute("departments", departmentService.getAllDepartments());
+            return "courses/edit";
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/courses";
+        }
     }
 
     @PostMapping("/{id}/edit")
@@ -101,6 +114,7 @@ public class CourseController {
                                RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             model.addAttribute("courseId", id);
+            model.addAttribute("departments", departmentService.getAllDepartments());
             return "courses/edit";
         }
 
@@ -111,6 +125,7 @@ public class CourseController {
         } catch (RuntimeException e) {
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("courseId", id);
+            model.addAttribute("departments", departmentService.getAllDepartments());
             return "courses/edit";
         }
     }
