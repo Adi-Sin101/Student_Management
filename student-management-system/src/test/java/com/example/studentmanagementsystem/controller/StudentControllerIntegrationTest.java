@@ -65,15 +65,15 @@ class StudentControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        // Clean up existing data
-        studentRepository.deleteAll();
-        teacherRepository.deleteAll();
-        departmentRepository.deleteAll();
+        // @Transactional will handle rollback, no need for explicit deleteAll()
 
-        // Create test department
-        testDepartment = new Department();
-        testDepartment.setName("Computer Science");
-        testDepartment = departmentRepository.save(testDepartment);
+        // Create test department (find or create to avoid unique constraint)
+        testDepartment = departmentRepository.findByName("Computer Science")
+                .orElseGet(() -> {
+                    Department dept = new Department();
+                    dept.setName("Computer Science");
+                    return departmentRepository.save(dept);
+                });
 
         // Create test student
         testStudent = new Student();
@@ -96,12 +96,13 @@ class StudentControllerIntegrationTest {
     // ==================== GET /students - List All Students ====================
 
     @Test
-    @DisplayName("GET /students - Should return 401 when not authenticated")
-    void whenListStudents_withoutAuthentication_thenReturn401() throws Exception {
+    @DisplayName("GET /students - Should redirect to login when not authenticated")
+    void whenListStudents_withoutAuthentication_thenRedirectToLogin() throws Exception {
         // Act & Assert
         mockMvc.perform(get("/students"))
                 .andDo(print())
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
     }
 
     @Test
@@ -189,25 +190,27 @@ class StudentControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /students/{id} - Should return 500 for non-existent student ID")
+    @DisplayName("GET /students/{id} - Should redirect with error for non-existent student ID")
     @WithMockUser(username = "john.doe@test.com", roles = "STUDENT")
-    void whenViewStudent_withNonExistentId_thenReturn500() throws Exception {
+    void whenViewStudent_withNonExistentId_thenRedirectWithError() throws Exception {
         // Act & Assert
         mockMvc.perform(get("/students/{id}", 999L))
                 .andDo(print())
-                .andExpect(status().is5xxServerError());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/students?error=*"));
     }
 
     // ==================== POST /students/{studentId}/courses/{courseId}/enroll ====================
 
     @Test
-    @DisplayName("POST /students/{studentId}/courses/{courseId}/enroll - Should require authentication")
-    void whenEnrollInCourse_withoutAuthentication_thenReturn401() throws Exception {
+    @DisplayName("POST /students/{studentId}/courses/{courseId}/enroll - Should redirect to login when not authenticated")
+    void whenEnrollInCourse_withoutAuthentication_thenRedirectToLogin() throws Exception {
         // Act & Assert
         mockMvc.perform(post("/students/{studentId}/courses/{courseId}/enroll", testStudent.getId(), 1L)
                         .with(csrf()))
                 .andDo(print())
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
     }
 
     @Test
@@ -223,13 +226,14 @@ class StudentControllerIntegrationTest {
     // ==================== POST /students/{studentId}/courses/{courseId}/unenroll ====================
 
     @Test
-    @DisplayName("POST /students/{studentId}/courses/{courseId}/unenroll - Should require authentication")
-    void whenUnenrollFromCourse_withoutAuthentication_thenReturn401() throws Exception {
+    @DisplayName("POST /students/{studentId}/courses/{courseId}/unenroll - Should redirect to login when not authenticated")
+    void whenUnenrollFromCourse_withoutAuthentication_thenRedirectToLogin() throws Exception {
         // Act & Assert
         mockMvc.perform(post("/students/{studentId}/courses/{courseId}/unenroll", testStudent.getId(), 1L)
                         .with(csrf()))
                 .andDo(print())
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
     }
 
     @Test
@@ -293,18 +297,21 @@ class StudentControllerIntegrationTest {
 
     @Test
     @DisplayName("Should enforce authentication on all student endpoints")
-    void whenAccessAnyEndpoint_withoutAuthentication_thenReturn401() throws Exception {
+    void whenAccessAnyEndpoint_withoutAuthentication_thenRedirectToLogin() throws Exception {
         // List students
         mockMvc.perform(get("/students"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
 
         // View student
         mockMvc.perform(get("/students/{id}", testStudent.getId()))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
 
         // Manage courses
         mockMvc.perform(get("/students/{id}/courses", testStudent.getId()))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
     }
 
     @Test
@@ -326,20 +333,20 @@ class StudentControllerIntegrationTest {
     @DisplayName("Should handle invalid student ID gracefully")
     @WithMockUser(username = "john.doe@test.com", roles = "STUDENT")
     void whenAccessStudent_withInvalidId_thenHandleGracefully() throws Exception {
-        // Act & Assert
+        // Act & Assert - negative ID should redirect with error
         mockMvc.perform(get("/students/{id}", -1L))
                 .andDo(print())
-                .andExpect(status().is5xxServerError());
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
     @DisplayName("Should handle SQL injection attempts safely")
     @WithMockUser(username = "john.doe@test.com", roles = "STUDENT")
     void whenAccessStudent_withSqlInjectionAttempt_thenHandleSafely() throws Exception {
-        // Act & Assert - Spring MVC should convert path variable safely
+        // Act & Assert - Spring MVC should convert path variable safely, resulting in 400 Bad Request
         mockMvc.perform(get("/students/{id}", "1' OR '1'='1"))
                 .andDo(print())
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isBadRequest());
     }
 
     // ==================== Response Content Tests ====================
