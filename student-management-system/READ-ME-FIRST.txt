@@ -1,0 +1,197 @@
+================================================================================
+                    BATCH FILE CLOSING INSTANTLY - FIXED!
+================================================================================
+
+PROBLEM:
+--------
+run-tests.bat closes immediately when you run it.
+
+SOLUTION:
+---------
+I created NEW batch files that WON'T close instantly!
+
+
+STEP-BY-STEP FIX:
+================================================================================
+
+STEP 1: Check Your Setup
+-------------------------
+Location: E:\3-2\LAB\SOFTWARE\lectures\lab3\student-management-system
+File: CHECK-SETUP.bat
+
+Action: Double-click CHECK-SETUP.bat
+
+What it does:
+  ✓ Checks if you're in the right folder
+  ✓ Checks if Maven Wrapper exists
+  ✓ Checks if Java is installed
+  ✓ Shows current Git branch
+
+Expected result:
+  You should see green checkmarks (✓) for everything
+
+Time: 5 seconds
+
+
+STEP 2: Run Tests (NEW VERSION)
+--------------------------------
+File: TEST-RUNNER.bat
+
+Action: Double-click TEST-RUNNER.bat
+
+What it does:
+  ✓ Checks prerequisites first
+  ✓ Runs all 200+ tests
+  ✓ Shows progress messages
+  ✓ STAYS OPEN so you can read results
+  ✓ Displays colored output (green=good, red=error)
+
+Expected result:
+  Window stays open
+  You see test progress
+  Final message: "SUCCESS! All tests completed"
+
+Time: 3-5 minutes
+
+
+ALTERNATIVE METHOD (If batch files don't work):
+================================================================================
+
+Method A: Use OPEN-CMD.bat
+---------------------------
+1. Double-click: OPEN-CMD.bat
+2. A command prompt opens and STAYS OPEN
+3. Type: .\mvnw.cmd clean test
+4. Press Enter
+5. Watch tests run
+6. Window won't close until you close it
+
+
+Method B: PowerShell (Manual)
+------------------------------
+1. Hold Shift + Right-click in project folder
+2. Choose "Open PowerShell window here"
+3. Type: .\mvnw.cmd clean test
+4. Press Enter
+5. Watch output
+
+
+Method C: Check if Java is installed
+-------------------------------------
+1. Open PowerShell
+2. Type: java -version
+3. Press Enter
+
+Expected: Should show "java version 17.x.x"
+If error: Install Java 17 from https://adoptium.net/
+
+
+================================================================================
+                              FILES CREATED
+================================================================================
+
+NEW Batch Files:
+  ✓ CHECK-SETUP.bat      - Diagnose your environment
+  ✓ TEST-RUNNER.bat      - Run tests (won't close instantly)
+  ✓ OPEN-CMD.bat         - Open persistent command window
+
+Documentation:
+  ✓ WINDOW-CLOSING-FIX.md   - This issue explained
+  ✓ BATCH-FILE-FIX.md       - Detailed troubleshooting
+
+Old File (Updated):
+  ✓ run-tests.bat        - Improved with error handling
+
+
+================================================================================
+                           WHAT YOU'LL SEE
+================================================================================
+
+When CHECK-SETUP.bat runs:
+--------------------------
+✓ mvnw.cmd found
+✓ pom.xml found
+✓ Java is installed
+✓ Project structure OK
+
+
+When TEST-RUNNER.bat runs:
+---------------------------
+Current Directory: E:\3-2\LAB\SOFTWARE\lectures\lab3\student-management-system
+✓ Found Maven Wrapper
+Starting test execution...
+[INFO] Scanning for projects...
+[INFO] Building student-management-system
+[INFO] Running tests...
+[INFO] Tests run: 200+, Failures: 0, Errors: 0
+[INFO] BUILD SUCCESS
+✓ SUCCESS! All tests completed
+
+
+================================================================================
+                         TROUBLESHOOTING
+================================================================================
+
+If CHECK-SETUP shows "✗ mvnw.cmd NOT found":
+  → You're in the wrong folder
+  → Navigate to: E:\3-2\LAB\SOFTWARE\lectures\lab3\student-management-system
+
+
+If CHECK-SETUP shows "✗ Java NOT found":
+  → Install Java 17 from https://adoptium.net/
+  → Restart computer after installing
+
+
+If TEST-RUNNER shows errors:
+  → Read the error message carefully
+  → Common issues:
+      - No internet (can't download dependencies)
+      - Test compilation errors
+      - Missing configuration
+
+
+If window STILL closes instantly:
+  → Use OPEN-CMD.bat instead
+  → Or use PowerShell Method B above
+
+
+================================================================================
+                         DO THIS NOW!
+================================================================================
+
+[1] Navigate to your project folder:
+    E:\3-2\LAB\SOFTWARE\lectures\lab3\student-management-system
+
+[2] Double-click: CHECK-SETUP.bat
+    (Verify everything shows ✓)
+
+[3] Double-click: TEST-RUNNER.bat
+    (Run tests - window stays open!)
+
+[4] Read the output
+    (Scroll up to see all test results)
+
+[5] Done!
+
+
+================================================================================
+                         SUCCESS INDICATORS
+================================================================================
+
+✓ Window stays open (doesn't close instantly)
+✓ You can read all the output
+✓ See "BUILD SUCCESS" at the end
+✓ Test count shows: "Tests run: 200+"
+✓ Can scroll up to see details
+
+
+================================================================================
+
+NEED MORE HELP?
+  → Open: BATCH-FILE-FIX.md (detailed guide)
+  → Open: WINDOW-CLOSING-FIX.md (quick reference)
+
+READY TO START?
+  → Double-click CHECK-SETUP.bat NOW!
+
+================================================================================
