@@ -51,6 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("CourseController Integration Tests")
 class CourseControllerIntegrationTest {
 
+
     @Autowired
     private MockMvc mockMvc;
 
